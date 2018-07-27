@@ -1,3 +1,4 @@
+const path = require('path');
 const mix = require('laravel-mix');
 const MjmlPlugin = require('./plugin');
 
@@ -28,7 +29,10 @@ class Mjml {
         this.outputPath = this.makeOutputPath(outputPath);
         this.extension = options.extension || '.blade.php';
         delete options.extension;
-        this.mjmlOptions = options;
+        this.mjmlOptions = Object.assign({
+            minify: false,
+            beautify: true
+        }, options);
     }
 
     /**
