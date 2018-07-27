@@ -1,6 +1,6 @@
 {
     "name": "laravel-mix-mjml",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "MJML integration for Laravel Mix",
     "main": "index.js",
     "repository": "stidges/laravel-mix-mjml",
