@@ -1,0 +1,13 @@
+{
+    "extends": ["eslint:recommended"],
+    "parserOptions": {
+        "ecmaVersion": 2017
+    },
+    "env": {
+        "node": true
+    },
+    "globals": {
+        "Mix": true,
+        "File": true
+    }
+}

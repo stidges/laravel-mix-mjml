@@ -1,0 +1,33 @@
+{
+    "name": "laravel-mix-mjml",
+    "version": "1.0.0",
+    "description": "MJML integration for Laravel Mix",
+    "main": "index.js",
+    "repository": "stidges/laravel-mix-mjml",
+    "bugs": {
+        "url": "https://github.com/stidges/laravel-mix-mjml/issues"
+    },
+    "homepage": "https://github.com/stidges/laravel-mix-mjml",
+    "keywords": [
+        "laravel",
+        "laravel mix",
+        "mjml",
+        "email",
+        "blade"
+    ],
+    "author": "Stidges",
+    "license": "MIT",
+    "dependencies": {
+        "glob": "^7.1.2",
+        "mjml": "^4.1.1"
+    },
+    "devDependencies": {
+        "eslint": "^5.2.0"
+    },
+    "peerDependencies": {
+        "laravel-mix": "^2.1.11"
+    },
+    "engines": {
+        "node": ">=6.0.0"
+    }
+}
