@@ -40,7 +40,7 @@ The path where the MJML files are located.
 **Type:** String  
 **Default:** `"resources/views/mail"`
 
-The path where the compiled files should be outputted to.
+The path where the compiled files should be outputted to. **Note:** This path will be resolved relative to your root path!
 
 ### options.extension
 

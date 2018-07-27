@@ -25,7 +25,7 @@ class Mjml {
      */
     register(inputPath = 'resources/mail', outputPath = 'resources/views/mail', options = {}) {
         this.inputPath = inputPath;
-        this.outputPath = outputPath;
+        this.outputPath = this.makeOutputPath(outputPath);
         this.extension = options.extension || '.blade.php';
         delete options.extension;
         this.mjmlOptions = options;
@@ -36,6 +36,28 @@ class Mjml {
      */
     webpackPlugins() {
         return new MjmlPlugin(this.inputPath, this.outputPath, this.extension, this.mjmlOptions);
+    }
+
+    /**
+     * Make the given output path relative to the mix root.
+     *
+     * @param {String} outputPath
+     */
+    makeOutputPath(outputPath) {
+        if (outputPath.substr(0, 1) === '.') {
+            // User has explicitly defined a path.
+            return outputPath;
+        }
+
+        const rootPath = Mix.paths.root();
+        const publicPath = mix.config.publicPath;
+        const relative = path.relative(publicPath, rootPath);
+
+        if (relative.length) {
+            outputPath = `${relative}/${outputPath}`.replace(/\/{2,}/g, '/');
+        }
+
+        return outputPath;
     }
 }
 
