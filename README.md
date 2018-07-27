@@ -37,14 +37,14 @@ The path where the MJML files are located.
 
 ### outputPath
 
-**Type:** String
+**Type:** String  
 **Default:** `"resources/views/mail"`
 
 The path where the compiled files should be outputted to.
 
 ### options.extension
 
-**Type:** String
+**Type:** String  
 **Default:** `".blade.php"`
 
 The extension to use when outputting the compiled files.
