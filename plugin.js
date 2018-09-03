@@ -32,6 +32,12 @@ class MjmlPlugin {
             }
 
             paths.forEach(path => {
+                if (compilation.fileDependencies.add) {
+                    compilation.fileDependencies.add(path);
+                } else {
+                    compilation.fileDependencies.push(path);
+                }
+
                 const filePath = path.replace(this.inputPath, this.outputPath).replace('.mjml', this.extension);
                 const response = mjml2html(fs.readFileSync(path, 'utf8'), this.mjmlOptions);
 
