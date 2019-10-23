@@ -3,6 +3,10 @@
     "version": "1.0.4",
     "description": "MJML integration for Laravel Mix",
     "main": "index.js",
+    "scripts": {
+        "prepublish": "npm run lint",
+        "lint": "eslint index.js plugin.js"
+    },
     "repository": "stidges/laravel-mix-mjml",
     "bugs": {
         "url": "https://github.com/stidges/laravel-mix-mjml/issues"
@@ -18,16 +22,16 @@
     "author": "Stidges",
     "license": "MIT",
     "dependencies": {
-        "glob": "^7.1.2",
-        "mjml": "^4.1.1"
+        "glob": "^7.1.5",
+        "mjml": "^4.5.1"
     },
     "devDependencies": {
-        "eslint": "^5.2.0"
+        "eslint": "^6.5.1"
     },
     "peerDependencies": {
-        "laravel-mix": "^2.1.11"
+        "laravel-mix": ">=2"
     },
     "engines": {
-        "node": ">=6.0.0"
+        "node": ">=6"
     }
 }
