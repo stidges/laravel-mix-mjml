@@ -1,6 +1,6 @@
 {
     "name": "laravel-mix-mjml",
-    "version": "1.0.4",
+    "version": "2.0.0",
     "description": "MJML integration for Laravel Mix",
     "main": "index.js",
     "scripts": {
