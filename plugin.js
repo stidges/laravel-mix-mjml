@@ -1,21 +1,14 @@
 const mjml2html = require('mjml');
-const glob = require('glob');
 const fs = require('fs');
 
 class MjmlPlugin {
     /**
      * Create a new MJML plugin instance.
      *
-     * @param {String} inputPath
-     * @param {String} outputPath
-     * @param {String} extension
-     * @param {Object} mjmlOptions
+     * @param {Array} toCompile
      */
-    constructor (inputPath, outputPath, extension, mjmlOptions = {}) {
-        this.outputPath = outputPath;
-        this.inputPath = inputPath;
-        this.extension = extension;
-        this.mjmlOptions = mjmlOptions
+    constructor(toCompile) {
+        this.toCompile = toCompile;
     }
 
     /**
@@ -23,31 +16,24 @@ class MjmlPlugin {
      *
      * @param {Object} compiler
      */
-    apply (compiler) {
+    apply(compiler) {
         compiler.plugin('emit', (compilation, callback) => {
-            const paths = glob.sync(`${this.inputPath}/**/*.mjml`);
-
-            if (! paths.length) {
-                callback();
-            }
-
-            paths.forEach(path => {
+            this.toCompile.forEach(({ entry, output, mjmlOptions }) => {
                 if (compilation.fileDependencies.add) {
-                    compilation.fileDependencies.add(path);
+                    compilation.fileDependencies.add(entry);
                 } else {
-                    compilation.fileDependencies.push(path);
+                    compilation.fileDependencies.push(entry);
                 }
 
-                const filePath = path.replace(this.inputPath, this.outputPath).replace('.mjml', this.extension);
-                const response = mjml2html(fs.readFileSync(path, 'utf8'), this.mjmlOptions);
+                const response = mjml2html(fs.readFileSync(entry, 'utf8'), mjmlOptions);
 
                 if (response.errors.length) {
                     const errors = response.errors.map(err => err.formattedMessage).join('\n- ');
-                    compilation.errors.push(`MJML compilation failed for "${path}"\n- ${errors}`);
+                    compilation.errors.push(`MJML compilation failed for "${entry}"\n- ${errors}`);
                     return;
                 }
 
-                compilation.assets[filePath] = {
+                compilation.assets[output] = {
                     source: () => response.html,
                     size: () => response.html.length
                 };

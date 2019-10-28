@@ -1,8 +1,13 @@
 const path = require('path');
+const glob = require('glob');
 const mix = require('laravel-mix');
 const MjmlPlugin = require('./plugin');
 
 class Mjml {
+    constructor() {
+        this.toCompile = [];
+    }
+
     /**
      * The API name for the component.
      */
@@ -20,48 +25,91 @@ class Mjml {
     /**
      * Register the component.
      *
-     * @param {String} inputPath
-     * @param {String} outputPath
+     * @param {String} entry
+     * @param {String} output
      * @param {Object} options
      */
-    register(inputPath = 'resources/mail', outputPath = 'resources/views/mail', options = {}) {
-        this.inputPath = inputPath;
-        this.outputPath = this.makeOutputPath(outputPath);
-        this.extension = options.extension || '.blade.php';
-        delete options.extension;
-        this.mjmlOptions = Object.assign({
+    register(entry = 'resources/mail', output = 'resource/views/mail', options = {}) {
+        options.sourceRoot = this.findSourceRoot(entry);
+
+        if (entry.includes('*')) {
+            entry = glob.sync(entry);
+        } else if (! /\.mjml$/.test(entry)) {
+            entry = glob.sync(path.join(entry, '**/*.mjml'));
+        }
+
+        options.extension = options.extension || '.blade.php';
+        options.mjmlOptions = Object.assign({
             minify: false,
-            beautify: true
-        }, options);
+            beautify: true,
+        }, options.mjmlOptions || {});
+
+        output = new File(output);
+        this.toCompile.push(
+            ...[].concat(entry).map(file => this.buildToCompileEntry(new File(file), output, options))
+        );
     }
 
     /**
      * Webpack plugins to be appended to the master config.
      */
     webpackPlugins() {
-        return new MjmlPlugin(this.inputPath, this.outputPath, this.extension, this.mjmlOptions);
+        return new MjmlPlugin(this.toCompile);
     }
 
     /**
-     * Make the given output path relative to the mix root.
+     * Build a toCompile entry for the given entry/output files.
+     *
+     * @param {File} entry
+     * @param {File} output
+     * @param {Object} options
+     */
+    buildToCompileEntry(entry, output, options) {
+        const result = {
+            entry: entry.path(),
+            mjmlOptions: Object.assign({
+                filePath: entry.path()
+            }, options.mjmlOptions),
+        };
+
+        if (! output.isDirectory()) {
+            result.output = this.relativeToPublicPath(output.relativePath());
+        } else {
+            result.output = this.relativeToPublicPath(
+                entry.relativePath()
+                    .replace(options.sourceRoot, output.relativePath())
+                    .replace(/\.mjml$/, options.extension)
+            );
+        }
+
+        return result;
+    }
+
+    /**
+     * Find the common source root for the entry path.
+     *
+     * @param {String} entry
+     */
+    findSourceRoot(entry) {
+        if (! entry.includes('*')) {
+            return path.dirname(entry);
+        }
+
+        const segments = entry.replace(/\\/g, '/').split('/');
+
+        return segments.slice(0, segments.findIndex(segment => segment.includes('*'))).join('/');
+    }
+
+    /**
+     * Make the given output path path relative to the public path.
      *
      * @param {String} outputPath
      */
-    makeOutputPath(outputPath) {
-        if (outputPath.substr(0, 1) === '.') {
-            // User has explicitly defined a path.
-            return outputPath;
-        }
-
-        const rootPath = Mix.paths.root();
-        const publicPath = mix.config.publicPath;
-        const relative = path.relative(publicPath, rootPath);
-
-        if (relative.length) {
-            outputPath = `${relative}/${outputPath}`.replace(/\/{2,}/g, '/');
-        }
-
-        return outputPath;
+    relativeToPublicPath(outputPath) {
+        return path.join(
+            path.relative(Mix.paths.root(mix.config.publicPath), Mix.paths.root()),
+            outputPath.replace(/\\/g, '/')
+        );
     }
 }
 
