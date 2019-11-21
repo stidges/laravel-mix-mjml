@@ -92,7 +92,7 @@ class Mjml {
      */
     findSourceRoot(entry) {
         if (! entry.includes('*')) {
-            return path.dirname(entry);
+            return /\.mjml$/.test(entry) ? path.dirname(entry) : entry;
         }
 
         const segments = entry.replace(/\\/g, '/').split('/');
