@@ -30,7 +30,7 @@ class Mjml {
      * @param {Object} options
      */
     register(entry = 'resources/mail', output = 'resource/views/mail', options = {}) {
-        options.sourceRoot = this.findSourceRoot(entry);
+        options.sourceRoot = path.normalize(this.findSourceRoot(entry));
 
         if (entry.includes('*')) {
             entry = glob.sync(entry);
