@@ -29,7 +29,7 @@ class Mjml {
      * @param {String} output
      * @param {Object} options
      */
-    register(entry = 'resources/mail', output = 'resource/views/mail', options = {}) {
+    register(entry = 'resources/mail', output = 'resources/views/mail', options = {}) {
         options.sourceRoot = path.normalize(this.findSourceRoot(entry));
 
         if (entry.includes('*')) {
