@@ -17,7 +17,7 @@ class MjmlPlugin {
      * @param {Object} compiler
      */
     apply(compiler) {
-        compiler.plugin('emit', (compilation, callback) => {
+        compiler.hooks.emit.tap('MjmlPlugin', (compilation, callback) => {
             this.toCompile.forEach(({ entry, output, mjmlOptions }) => {
                 if (compilation.fileDependencies.add) {
                     compilation.fileDependencies.add(entry);
@@ -39,7 +39,9 @@ class MjmlPlugin {
                 };
             });
 
-            callback();
+            if(callback !== undefined) {
+                callback();
+            }
         });
     }
 }
