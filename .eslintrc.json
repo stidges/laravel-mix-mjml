@@ -8,6 +8,6 @@
     },
     "globals": {
         "Mix": true,
-        "File": true
+        "Config": true
     }
 }

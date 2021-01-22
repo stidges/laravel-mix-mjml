@@ -1,0 +1,12 @@
+<mjml>
+    <mj-body>
+        <mj-wrapper>
+            <mj-section>
+                <mj-column>
+                    <mj-text>__FOO__</mj-text>
+                    <mj-include path="./other.mjml" />
+                </mj-column>
+            </mj-section>
+        </mj-wrapper>
+    </mj-body>
+</mjml>
