@@ -2,6 +2,7 @@ const path = require('path');
 const glob = require('glob');
 const mix = require('laravel-mix');
 const MjmlPlugin = require('./plugin');
+const File = require('laravel-mix/src/File')
 
 class Mjml {
     constructor() {
@@ -107,7 +108,7 @@ class Mjml {
      */
     relativeToPublicPath(outputPath) {
         return path.join(
-            path.relative(Mix.paths.root(mix.config.publicPath), Mix.paths.root()),
+            path.relative(Mix.paths.root(Config.publicPath), Mix.paths.root()),
             outputPath.replace(/\\/g, '/')
         );
     }
