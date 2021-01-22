@@ -1,3 +1,4 @@
+const { Compilation } = require('webpack');
 const mjml2html = require('mjml');
 const fs = require('fs');
 
@@ -17,32 +18,27 @@ class MjmlPlugin {
      * @param {Object} compiler
      */
     apply(compiler) {
-        compiler.hooks.emit.tap('MjmlPlugin', (compilation, callback) => {
-            this.toCompile.forEach(({ entry, output, mjmlOptions }) => {
-                if (compilation.fileDependencies.add) {
-                    compilation.fileDependencies.add(entry);
-                } else {
-                    compilation.fileDependencies.push(entry);
-                }
+        compiler.hooks.compilation.tap('MjmlPlugin', (compilation) => {
+            compilation.hooks.processAssets.tap({
+                name: 'MjmlPlugin',
+                stage: Compilation.PROCESS_ASSETS_STAGE_ADDITIONAL,
+            }, () => {
+                this.toCompile.forEach(({ entry, output, mjmlOptions }) => {
+                    const response = mjml2html(fs.readFileSync(entry, 'utf8'), mjmlOptions);
 
-                const response = mjml2html(fs.readFileSync(entry, 'utf8'), mjmlOptions);
+                    if (response.errors.length) {
+                        const errors = response.errors.map(err => err.formattedMessage).join('\n- ');
+                        compilation.errors.push(`MJML compilation failed for "${entry}"\n- ${errors}`);
+                        return;
+                    }
 
-                if (response.errors.length) {
-                    const errors = response.errors.map(err => err.formattedMessage).join('\n- ');
-                    compilation.errors.push(`MJML compilation failed for "${entry}"\n- ${errors}`);
-                    return;
-                }
-
-                compilation.assets[output] = {
-                    source: () => response.html,
-                    size: () => response.html.length
-                };
+                    compilation.emitAsset(output, {
+                        source: () => response.html,
+                        size: () => response.html.length
+                    });
+                });
             });
-
-            if(callback !== undefined) {
-                callback();
-            }
-        });
+       });
     }
 }
 
