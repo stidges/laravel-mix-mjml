@@ -31,7 +31,7 @@ class Mjml {
      * @param {Object} options
      */
     register(entry = 'resources/mail', output = 'resources/views/mail', options = {}) {
-        options.sourceRoot = path.normalize(this.findSourceRoot(entry));
+        options.sourceRoot = new File(this.findSourceRoot(entry)).relativePath();
 
         if (entry.includes('*')) {
             entry = glob.sync(entry);
@@ -78,7 +78,7 @@ class Mjml {
         } else {
             result.output = this.relativeToPublicPath(
                 entry.relativePath()
-                    .replace(options.sourceRoot, output.relativePath())
+                    .replace(`${options.sourceRoot}/`, `${output.relativePath()}/`)
                     .replace(/\.mjml$/, options.extension)
             );
         }
