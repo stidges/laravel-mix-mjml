@@ -1,5 +1,7 @@
 # Laravel Mix MJML
 
+![tests](https://github.com/stidges/laravel-mix-mjml/workflows/tests/badge.svg)
+
 A [Laravel Mix](https://github.com/JeffreyWay/laravel-mix) plugin to compile [MJML](https://mjml.io) files.
 
 ## Installation
