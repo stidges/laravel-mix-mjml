@@ -14,7 +14,7 @@ jest.setTimeout(60000);
 beforeEach(async () => await sandbox.clean());
 afterAll(async () => await sandbox.destroySandbox());
 
-test('it works', async (done) => {
+test('it works', (done) => {
     mix.disableNotifications();
     Mix.primary.paths.setRootPath(path.resolve(__dirname, 'fixture'))
     mix.setPublicPath(sandbox.path.resolve('public'));
@@ -22,16 +22,18 @@ test('it works', async (done) => {
         extension: '.html',
     });
 
-    webpack(await webpackConfig(), (err, stats) => {
-        if (err) {
-            return done(err);
-        } else if (stats.hasErrors()) {
-            return done(new Error(stats.toString()));
-        }
+    webpackConfig().then(config => {
+        webpack(config, (err, stats) => {
+            if (err) {
+                return done(err);
+            } else if (stats.hasErrors()) {
+                return done(new Error(stats.toString()));
+            }
 
-        const html = fs.readFileSync(sandbox.path.resolve('dist/test.html'), 'utf8');
-        expect(html).toMatch('__FOO__');
-        expect(html).toMatch('__BAR__');
-        done();
+            const html = fs.readFileSync(sandbox.path.resolve('dist/test.html'), 'utf8');
+            expect(html).toMatch('__FOO__');
+            expect(html).toMatch('__BAR__');
+            done();
+        });
     });
 });
