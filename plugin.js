@@ -24,6 +24,8 @@ class MjmlPlugin {
                 stage: Compilation.PROCESS_ASSETS_STAGE_ADDITIONAL,
             }, () => {
                 this.toCompile.forEach(({ entry, output, mjmlOptions }) => {
+                    compilation.fileDependencies.add(entry);
+
                     const response = mjml2html(fs.readFileSync(entry, 'utf8'), mjmlOptions);
 
                     if (response.errors.length) {
