@@ -78,7 +78,7 @@ class Mjml {
         } else {
             result.output = this.relativeToPublicPath(
                 entry.relativePath()
-                    .replace(`${options.sourceRoot}/`, `${output.relativePath()}/`)
+                    .replace(`${options.sourceRoot}`, `${output.relativePath()}`)
                     .replace(/\.mjml$/, options.extension)
             );
         }
