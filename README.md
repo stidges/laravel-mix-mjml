@@ -12,9 +12,22 @@ This package can be installed through NPM:
 npm install -D laravel-mix-mjml
 ```
 
-## Upgrading to v2.0.0
+## Upgrading to v4.0.0
 
-Please review the features and breaking changes documented in the [release notes](https://github.com/stidges/laravel-mix-mjml/releases/tag/v2.0.0).
+In previous versions this plugin set the MJML `beautify` option to `true` by default, but since
+v4 of MJML this option has been deprecated and will be remove in v5. If you'd still like to use 
+this you can add the following to your `webpack.mix.js`:
+
+```js
+mix.mjml('...', '...', {
+    mjmlOptions: {
+        beautify: true
+    }
+});
+```
+
+Additionally v4 of MJML removes the `minify` option. This has been removed from the plugin defaults,
+but should not affect the output of your code.
 
 ## Basic Usage
 
@@ -58,14 +71,7 @@ The extension to use when outputting the compiled files. Ignored if a specific f
 ### options.mjmlOptions
 
 **Type:** `Object`  
-**Default:** 
-```js 
-{
-    minify: false,
-    beautify: true,
-    filePath: '/path/to/input/file',
-}
-``` 
+**Default:** `{}`
 
 The options to pass to the MJML compiler. Please review [the MJML documetation](https://mjml.io/documentation/#inside-node-js) which options are accepted here.
 
