@@ -40,10 +40,7 @@ class Mjml {
         }
 
         options.extension = options.extension || '.blade.php';
-        options.mjmlOptions = Object.assign({
-            minify: false,
-            beautify: true,
-        }, options.mjmlOptions || {});
+        options.mjmlOptions = options.mjmlOptions || {};
 
         output = new File(output);
         this.toCompile.push(
