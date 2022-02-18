@@ -26,7 +26,13 @@ class MjmlPlugin {
                 this.toCompile.forEach(({ entry, output, mjmlOptions }) => {
                     compilation.fileDependencies.add(entry);
 
-                    const response = mjml2html(fs.readFileSync(entry, 'utf8'), mjmlOptions);
+                    let response;
+
+                    try {
+                        response = mjml2html(fs.readFileSync(entry, 'utf8'), mjmlOptions);
+                    } catch (e) {
+                        response = { errors: [{ formattedMessage: e.toString() }] };
+                    }
 
                     if (response.errors.length) {
                         const errors = response.errors.map(err => err.formattedMessage).join('\n- ');

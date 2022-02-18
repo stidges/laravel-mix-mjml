@@ -30,10 +30,40 @@ test('it works', (done) => {
                 return done(new Error(stats.toString()));
             }
 
-            const html = fs.readFileSync(sandbox.path.resolve('dist/test.html'), 'utf8');
-            expect(html).toMatch('__FOO__');
-            expect(html).toMatch('__BAR__');
-            done();
+            try {
+                const html = fs.readFileSync(sandbox.path.resolve('dist/test.html'), 'utf8');
+                expect(html).toMatch('__FOO__');
+                expect(html).toMatch('__BAR__');
+                done();
+            } catch (e) {
+                done(e);
+            }
+        });
+    });
+});
+
+test('it gracefully handles invalid mjml errors', (done) => {
+    mix.disableNotifications();
+    Mix.primary.paths.setRootPath(path.resolve(__dirname, 'fixture'))
+    mix.setPublicPath(sandbox.path.resolve('public'));
+    mix.mjml(path.resolve(__dirname, 'fixture/src/invalid.mjml'), sandbox.path.resolve('dist'), {
+        extension: '.html',
+    });
+
+    webpackConfig().then(config => {
+        webpack(config, (err, stats) => {
+            try {
+                expect(err).toBeNull();
+                expect(stats.hasErrors()).toBe(true);
+                const details = stats.toJson();
+                expect(details.errors).toHaveLength(1);
+                expect(details.errors[0].message).toEqual(
+                    expect.stringContaining('MJML compilation failed')
+                );
+                done();
+            } catch (e) {
+                done(e);
+            }
         });
     });
 });
